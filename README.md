@@ -1,1 +1,1 @@
-# least-squares
+# Quadratic approximation
