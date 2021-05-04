@@ -39,13 +39,8 @@ Fa = np.exp(a_k[0]) * np.sin(a_k[0])
 Fb = np.exp(b_k[0]) * np.sin(b_k[0])
 Fc = np.exp(c_k[0]) * np.sin(c_k[0])
 
-print("Fa", Fa)
-print("Fb", Fb)
-print("Fc", Fc)
-
-
 x_pom = x_kk(a_k[0],b_k[0],c_k[0],Fa,Fb,Fc)
-print(x_pom)
+
 plt.figure()
 plt.plot(f_x1)
 plt.show()
