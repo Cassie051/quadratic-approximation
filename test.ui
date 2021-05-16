@@ -1,0 +1,162 @@
+<ui version="4.0">
+<class>Interface</class>
+<widget class="QWidget" name="Interface">
+<property name="geometry">
+<rect>
+<x>0</x>
+<y>0</y>
+<width>800</width>
+<height>600</height>
+</rect>
+</property>
+<property name="windowTitle">
+<string>Interface</string>
+</property>
+<layout class="QGridLayout" name="gridLayout">
+<item row="0" column="2">
+<layout class="QVBoxLayout" name="verticalLayout_3">
+<item>
+<widget class="MplWidget" name="widget" native="true"/>
+</item>
+</layout>
+</item>
+<item row="0" column="0">
+<layout class="QVBoxLayout" name="verticalLayout">
+<item>
+<widget class="QTextBrowser" name="textBrowser"/>
+</item>
+</layout>
+</item>
+<item row="3" column="0">
+<layout class="QVBoxLayout" name="verticalLayout_4">
+<item>
+<layout class="QHBoxLayout" name="horizontalLayout_2">
+<item>
+<widget class="QLabel" name="label_5">
+<property name="text">
+<string>Przedział rysowania: </string>
+</property>
+</widget>
+</item>
+<item>
+<widget class="QLineEdit" name="przedzial_linia"/>
+</item>
+<item>
+<widget class="QPushButton" name="przedzial_akcept">
+<property name="text">
+<string>Akceptuj</string>
+</property>
+</widget>
+</item>
+</layout>
+</item>
+<item>
+<layout class="QHBoxLayout" name="horizontalLayout">
+<item>
+<widget class="QLabel" name="label_2">
+<property name="text">
+<string>Funkcja:</string>
+</property>
+</widget>
+</item>
+<item>
+<widget class="QLineEdit" name="funkcja_linia"/>
+</item>
+<item>
+<widget class="QPushButton" name="funkcja_akcept">
+<property name="text">
+<string>Akceptuj</string>
+</property>
+</widget>
+</item>
+</layout>
+</item>
+<item>
+<layout class="QHBoxLayout" name="horizontalLayout_6">
+<item>
+<widget class="QLabel" name="label">
+<property name="text">
+<string>Punkt startowy:</string>
+</property>
+</widget>
+</item>
+<item>
+<widget class="QLineEdit" name="startowy_linia"/>
+</item>
+<item>
+<widget class="QPushButton" name="startowy_akcept">
+<property name="text">
+<string>Akceptuj</string>
+</property>
+</widget>
+</item>
+</layout>
+</item>
+</layout>
+</item>
+<item row="3" column="2">
+<layout class="QVBoxLayout" name="verticalLayout_5">
+<item>
+<widget class="QPushButton" name="rysuj">
+<property name="text">
+<string>Rysuj</string>
+</property>
+</widget>
+</item>
+<item>
+<layout class="QHBoxLayout" name="horizontalLayout_4">
+<item>
+<widget class="QLabel" name="label_3">
+<property name="text">
+<string>Dokładność:</string>
+</property>
+</widget>
+</item>
+<item>
+<widget class="QLineEdit" name="dokladnosc_linia"/>
+</item>
+<item>
+<widget class="QPushButton" name="dokladnosc_akcept">
+<property name="text">
+<string>Akceptuj</string>
+</property>
+</widget>
+</item>
+</layout>
+</item>
+<item>
+<layout class="QHBoxLayout" name="horizontalLayout_5">
+<item>
+<widget class="QLabel" name="label_4">
+<property name="text">
+<string>Liczba iteracji:</string>
+</property>
+</widget>
+</item>
+<item>
+<widget class="QLineEdit" name="iteracja_linia"/>
+</item>
+<item>
+<widget class="QPushButton" name="iteracja_akcept">
+<property name="text">
+<string>Akceptuj</string>
+</property>
+</widget>
+</item>
+</layout>
+</item>
+</layout>
+</item>
+</layout>
+</widget>
+<customwidgets>
+<customwidget>
+<class>MplWidget</class>
+<extends>QWidget</extends>
+<header location="global">mplwidget.h</header>
+<container>1</container>
+</customwidget>
+</customwidgets>
+<resources/>
+<connections/>
+</ui>
