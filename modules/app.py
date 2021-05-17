@@ -9,8 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot
-from PlotWidget import MplWidget
+from modules.plot_widget import MplWidget
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
