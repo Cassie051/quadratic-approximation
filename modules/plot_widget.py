@@ -141,7 +141,6 @@ class MplWidget(QWidget):
 
 
     def rysuj(self, start, direction, estimation, literation, set_function, ):
-        self.canvas.axes = self.canvas.figure.add_subplot(111)
 
         self.canvas.axes.clear()
 
@@ -191,11 +190,10 @@ class MplWidget(QWidget):
                 try:
                     xm_x1= []
                     xm_x2= []
+                    self.canvas.axes.scatter(self.x_a[0],self.x_a[1],c="pink")
                     for i in range(len(self.vector_xm)):
                         xm_x1.append(self.vector_xm[i][0])
                         xm_x2.append(self.vector_xm[i][1])
-                        if(i==0):
-                            self.canvas.axes.scatter(self.x_a[0],self.x_a[1],c="pink")
                         self.canvas.axes.scatter(self.vector_xm[i][0],self.vector_xm[i][1],c="red")
                     self.canvas.axes.plot(xm_x1,xm_x2)
                     self.canvas.draw()
@@ -209,7 +207,7 @@ class MplWidget(QWidget):
             except:
                 msg = QMessageBox()
                 msg.setText("Błąd")
-                msg.setInformativeText('Nie podano funkcji!')
+                msg.setInformativeText('Podano nieprawidłową funkcję!')
                 msg.setWindowTitle("Błąd")
                 msg.exec_()
         else:
