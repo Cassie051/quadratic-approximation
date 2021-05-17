@@ -10,12 +10,12 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSlot
-
+from PlotWidget import MplWidget
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(656, 403)
+        MainWindow.resize(1100, 600)
         font = QtGui.QFont()
         font.setFamily("Roboto")
         MainWindow.setFont(font)
@@ -132,7 +132,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.horizontalLayout_6.addLayout(self.verticalLayout)
 
-        self.widget = QtWidgets.QWidget(self.centralwidget)
+        self.widget = MplWidget(self.centralwidget)
         self.widget.setMinimumSize(QtCore.QSize(300, 300))
         self.widget.setObjectName("widget")
         self.horizontalLayout_6.addWidget(self.widget)
@@ -164,12 +164,17 @@ class Ui_MainWindow(object):
     def define_funnctionality(self, MainWindow):
         self.pushButton.clicked.connect(self.on_click)
 
-
-        
     # @pyqtSlot()
     def on_click(self):
-        text = f'You gave: {self.start_point.text()}, {self.direction_d0.text()}, {self.estimation.text()}, {self.literation.text()} for {self.set_function.text()}'
-        self.textBrowser.append(text)
+        self.textBrowser.append(f'Obliczam warstwice dla {self.set_function.text()}')
+        xm, result = self.widget.rysuj(self.start_point.text(), self.direction_d0.text(), self.estimation.text(), self.literation.text(), self.set_function.text())
+        self.textBrowser.append(f'Gotowe!')
+        if result == None:
+            self.textBrowser.append("Nie znaleziono minimum : - :")
+        else:
+            self.textBrowser.append(f'Wektor kontrolnych minimów Xm: {xm}')
+            self.textBrowser.append(f'Otrzymane minimum {result}')
+
 
 if __name__ == "__main__":
     import sys
