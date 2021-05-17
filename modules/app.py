@@ -168,10 +168,10 @@ class Ui_MainWindow(object):
     def on_click(self):
         self.textBrowser.append(f'Obliczam warstwice dla {self.set_function.text()}')
         xm, result = self.widget.rysuj(self.start_point.text(), self.direction_d0.text(), self.estimation.text(), self.literation.text(), self.set_function.text())
-        self.textBrowser.append(f'Gotowe!')
         if result == None:
             self.textBrowser.append("Nie znaleziono minimum : - :")
         else:
+            self.textBrowser.append(f'Gotowe!')
             self.textBrowser.append(f'Wektor kontrolnych minimów Xm: {xm}')
             self.textBrowser.append(f'Otrzymane minimum {result}')
 
