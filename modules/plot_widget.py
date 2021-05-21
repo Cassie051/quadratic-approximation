@@ -29,12 +29,24 @@ class MplWidget(QWidget):
 
         self.canvas.axes.clear()
 
-    def line(self, px):
+    def line(self, px,dir):
         p=[]
         p.append(px)
         if len(self.x_a) == 2:
-            p.append((self.d0[1]-self.x_a[1])*px / (self.d0[0]-self.x_a[0]) +
-                    self.x_a[1] - (self.d0[1]-self.x_a[1])*self.x_a[0] / (self.d0[0]-self.x_a[0]))
+            if self.d0[0]-self.x_a[0]==0:
+                if dir == 1:
+                    p.append(px+int(np.rand()*10+5))
+                elif dir == 2:
+                    p.append(px+int(np.rand()*10+15))
+                elif dir == 3:
+                    p.append(px-int(np.rand()*10+5))
+                elif dir == 4:
+                    p.append(px-int(np.rand()*10+15))
+            elif self.d0[1]-self.x_a[1]==0:
+                p.append(self.d0[1])
+            else:
+                p.append((self.d0[1]-self.x_a[1])*px / (self.d0[0]-self.x_a[0]) +
+                     self.x_a[1] - (self.d0[1]-self.x_a[1])*self.x_a[0] / (self.d0[0]-self.x_a[0]))
         elif len(self.x_a) == 3:
             dx = self.d0[0]-self.x_a[0]  # xd-xa
             dy = self.d0[1]-self.x_a[1]  # yd-ya
@@ -57,13 +69,13 @@ class MplWidget(QWidget):
         b = b_prev
         d = d_prev
         l = 0
+        tab = [a, b, d]
+        tab.sort()
+        a = tab[0]
+        b = tab[1]
+        d = tab[2]
         while (d[0]-a[0]>=self.E2 and d[1]-a[1]>=self.E2) or l != self.L:
-            tab = [a, b, d]
-            tab.sort()
-
-            a = tab[0]
-            b = tab[1]
-            d = tab[2]
+         
 
             a_prev = a
             b_prev = b
@@ -139,6 +151,24 @@ class MplWidget(QWidget):
                 msg.exec_()
                 return None
 
+    def setupControls(self):
+        # oś OX: A < b < d oraz I i IV ćwiartka:
+        if (self.d0[1]-self.x_a[1]==0 and self.d0[0]>self.x_a[0]) or (self.d0[0]>self.x_a[0] and self.d0[1]>self.x_a[1]) or (self.d0[0]>self.x_a[0] and self.d0[1]<self.x_a[1]):
+            x_b = self.line(self.x_a[0]+int(np.rand()*10+10),0)
+            x_d = self.line(self.x_a[0]+int(np.rand()*10+20),0)
+        # oś OX: A > b > d oraz II i III ćwiartka:
+        elif (self.d0[1]-self.x_a[1]==0 and self.d0[0]<self.x_a[0]) or (self.d0[0]<self.x_a[0] and self.d0[1]>self.x_a[1]) or (self.d0[0]<self.x_a[0] and self.d0[1]<self.x_a[1]):
+            x_b = self.line(self.x_a[0]-int(np.rand()*10+10),0)
+            x_d = self.line(self.x_a[0]-int(np.rand()*10+20),0)
+        # oś OY: A < b < d 
+        elif self.d0[0]-self.x_a[0]==0 and self.d0[1]>self.x_a[1]:
+            x_b = self.line(self.x_a[0],1)
+            x_d = self.line(self.x_a[0],2)
+        # oś OY: A > b > d
+        elif self.d0[0]-self.x_a[0]==0 and self.d0[1]<self.x_a[1]:
+            x_b = self.line(self.x_a[0],3)
+            x_d = self.line(self.x_a[0],4)
+        return x_b,x_d     
 
     def rysuj(self, start, direction, estimation, literation, set_function, ):
         self.canvas.axes = self.canvas.figure.add_subplot(111)
@@ -170,8 +200,7 @@ class MplWidget(QWidget):
                 funkcja = funkcja.replace("x2","Y")
                 Z = eval(funkcja)
 
-                x_b = self.line(10)
-                x_d = self.line(20)
+                x_b,x_d=self.setupControls()
 
                 Fa = self.F_goal(self.x_a)
                 Fb = self.F_goal(x_b)
