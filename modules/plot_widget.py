@@ -33,8 +33,11 @@ class MplWidget(QWidget):
         p=[]
         p.append(px)
         if len(self.x_a) == 2:
-            p.append((self.d0[1]-self.x_a[1])*px / (self.d0[0]-self.x_a[0]) +
-                    self.x_a[1] - (self.d0[1]-self.x_a[1])*self.x_a[0] / (self.d0[0]-self.x_a[0]))
+            if(self.d0[0]-self.x_a[0] != 0):
+                p.append((self.d0[1]-self.x_a[1])*px / (self.d0[0]-self.x_a[0]) +
+                        self.x_a[1] - (self.d0[1]-self.x_a[1])*self.x_a[0] / (self.d0[0]-self.x_a[0]))
+            else:
+                p.append(self.x_a[0])
         elif len(self.x_a) == 3:
             dx = self.d0[0]-self.x_a[0]  # xd-xa
             dy = self.d0[1]-self.x_a[1]  # yd-ya
@@ -57,7 +60,7 @@ class MplWidget(QWidget):
         b = b_prev
         d = d_prev
         l = 0
-        while (d[0]-a[0]>=self.E2 and d[1]-a[1]>=self.E2) or l != self.L:
+        while (d[0]-a[0]>=self.E2 or l != self.L):
             tab = [a, b, d]
             tab.sort()
 
@@ -84,8 +87,8 @@ class MplWidget(QWidget):
                     else:
                         print('kontrola 2')
                         return b
-                elif p[0] > a[0] and p[0] < d[0] and p[1] > a[1] and p[1] < d[1]:
-                    if p[0] < b[0] and p[1] < b[1]:
+                elif p[0] > a[0] and p[0] < d[0]:
+                    if p[0] < b[0]:
                         if F_x < fb:
                             a = a_prev
                             b = p
@@ -117,7 +120,7 @@ class MplWidget(QWidget):
                             fd = F_x
                             l += 1
                             print('kontrola 6')
-                    if d[0]-a[0]<self.E2 and d[1]-a[1]:
+                    if d[0]-a[0]<self.E2:
                         if F_x<fb:
                             print('kontrola 7')
                             return p
@@ -169,6 +172,7 @@ class MplWidget(QWidget):
                 funkcja = funkcja.replace("x2","Y")
                 Z = eval(funkcja)
 
+                value_xm = []
                 x_b = self.line(10)
                 x_d = self.line(20)
 
@@ -179,7 +183,7 @@ class MplWidget(QWidget):
                 result = self.minimum3D(self.x_a,x_b,x_d,Fa,Fb,Fd)
 
                 if(result == None):
-                    return self.vector_xm, result
+                    return self.vector_xm, value_xm, result, result, self.F_goal(self.x_a)
 
                 self.canvas.axes.clear()
 
@@ -191,28 +195,27 @@ class MplWidget(QWidget):
                     xm_x1= []
                     xm_x2= []
                     self.canvas.axes.scatter(self.x_a[0],self.x_a[1],c="pink")
+                    for i in self.vector_xm:
+                        value_xm.append(self.F_goal(i))
                     for i in range(len(self.vector_xm)):
                         xm_x1.append(self.vector_xm[i][0])
                         xm_x2.append(self.vector_xm[i][1])
                         self.canvas.axes.scatter(self.vector_xm[i][0],self.vector_xm[i][1],c="red")
                     self.canvas.axes.plot(xm_x1,xm_x2)
                     self.canvas.draw()
-                    return self.vector_xm, result
+                    return self.vector_xm, value_xm, result, self.F_goal(result), self.F_goal(self.x_a)
                 except:
                     msg = QMessageBox()
-                    msg.setText("Błąd")
                     msg.setInformativeText('Wystąpił nieoczekiwany błąd przy rysowaniu!')
                     msg.setWindowTitle("Błąd")
                     msg.exec_()
             except:
                 msg = QMessageBox()
-                msg.setText("Błąd")
                 msg.setInformativeText('Podano nieprawidłową funkcję!')
                 msg.setWindowTitle("Błąd")
                 msg.exec_()
         else:
              msg = QMessageBox()
-             msg.setText("Błąd")
              msg.setInformativeText('Nie podano kierunku!')
              msg.setWindowTitle("Błąd")
              msg.exec_()
