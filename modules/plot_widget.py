@@ -65,6 +65,12 @@ class MplWidget(QWidget):
         return out
 
     def minimum3D(self, a_prev,b_prev,d_prev,fa,fb,fd):
+        if d_prev[0]-a_prev[0] == 0 and d_prev[1]>a_prev[1]:
+            dir = 1
+        elif d_prev[0]-a_prev[0]==0 and d_prev[1]<a_prev[1]:
+            dir = 3
+        else:
+            dir = 0
         a = a_prev
         b = b_prev
         d = d_prev
@@ -74,7 +80,7 @@ class MplWidget(QWidget):
         a = tab[0]
         b = tab[1]
         d = tab[2]
-        while (d[0]-a[0]>=self.E2 and d[1]-a[1]>=self.E2) or l != self.L:
+        while (d[0]-a[0]>=self.E2) or l != self.L:
          
 
             a_prev = a
@@ -85,7 +91,7 @@ class MplWidget(QWidget):
             Mx1 = 2*(fa*(b[0]-d[0])+fb*(d[0]-a[0])+fd*(a[0]-b[0]))
 
             p1 = Lx1/Mx1
-            p = self.line(p1)
+            p = self.line(p1,dir)
             self.vector_xm.append(p)
             if Mx1<0 :
                 F_x = self.F_goal(p)
@@ -96,8 +102,8 @@ class MplWidget(QWidget):
                     else:
                         print('kontrola 2')
                         return b
-                elif p[0] > a[0] and p[0] < d[0] and p[1] > a[1] and p[1] < d[1]:
-                    if p[0] < b[0] and p[1] < b[1]:
+                elif p[0] > a[0] and p[0] < d[0] :
+                    if p[0] < b[0]:
                         if F_x < fb:
                             a = a_prev
                             b = p
@@ -129,7 +135,7 @@ class MplWidget(QWidget):
                             fd = F_x
                             l += 1
                             print('kontrola 6')
-                    if d[0]-a[0]<self.E2 and d[1]-a[1]:
+                    if d[0]-a[0]<self.E2:
                         if F_x<fb:
                             print('kontrola 7')
                             return p
