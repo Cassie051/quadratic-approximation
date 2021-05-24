@@ -35,13 +35,13 @@ class MplWidget(QWidget):
         if len(self.x_a) == 2:
             if self.d0[0]-self.x_a[0]==0:
                 if dir == 1:
-                    p.append(px+int(np.rand()*10+5))
+                    p.append(px+int(np.random.rand()*10+5))
                 elif dir == 2:
-                    p.append(px+int(np.rand()*10+15))
+                    p.append(px+int(np.random.rand()*10+15))
                 elif dir == 3:
-                    p.append(px-int(np.rand()*10+5))
+                    p.append(px-int(np.random.rand()*10+5))
                 elif dir == 4:
-                    p.append(px-int(np.rand()*10+15))
+                    p.append(px-int(np.random.rand()*10+15))
             elif self.d0[1]-self.x_a[1]==0:
                 p.append(self.d0[1])
             else:
@@ -64,7 +64,7 @@ class MplWidget(QWidget):
             out = eval(code)
         return out
 
-    def minimum3D(self, a_prev,b_prev,d_prev,fa,fb,fd):
+    def minimum3D(self, a_prev,b_prev,d_prev):
         if d_prev[0]-a_prev[0] == 0 and d_prev[1]>a_prev[1]:
             dir = 1
         elif d_prev[0]-a_prev[0]==0 and d_prev[1]<a_prev[1]:
@@ -80,8 +80,10 @@ class MplWidget(QWidget):
         a = tab[0]
         b = tab[1]
         d = tab[2]
-        while (d[0]-a[0]>=self.E2) or l != self.L:
-         
+        fa=self.F_goal(a)
+        fb=self.F_goal(b)
+        fd=self.F_goal(d)
+        while (d[0]-a[0]>=self.E2) or l != self.L:       
 
             a_prev = a
             b_prev = b
@@ -90,10 +92,10 @@ class MplWidget(QWidget):
             Lx1 = fa*(b[0]**2-d[0]**2)+fb*(d[0]**2-a[0]**2)+fd*(a[0]**2-b[0]**2)
             Mx1 = 2*(fa*(b[0]-d[0])+fb*(d[0]-a[0])+fd*(a[0]-b[0]))
 
-            p1 = Lx1/Mx1
-            p = self.line(p1,dir)
-            self.vector_xm.append(p)
             if Mx1<0 :
+                p1 = Lx1/Mx1
+                p = self.line(p1,dir)
+                self.vector_xm.append(p)
                 F_x = self.F_goal(p)
                 if (np.sqrt((p[0]-a[0])**2+(p[1]-a[1])**2)<self.E2) or (np.sqrt((p[0]-b[0])**2+(p[1]-b[1])**2)<self.E2) or (np.sqrt((p[0]-d[0])**2+(p[1]-d[1])**2)<self.E2):
                     if F_x < fb:
@@ -160,12 +162,12 @@ class MplWidget(QWidget):
     def setupControls(self):
         # oś OX: A < b < d oraz I i IV ćwiartka:
         if (self.d0[1]-self.x_a[1]==0 and self.d0[0]>self.x_a[0]) or (self.d0[0]>self.x_a[0] and self.d0[1]>self.x_a[1]) or (self.d0[0]>self.x_a[0] and self.d0[1]<self.x_a[1]):
-            x_b = self.line(self.x_a[0]+int(np.rand()*10+10),0)
-            x_d = self.line(self.x_a[0]+int(np.rand()*10+20),0)
+            x_b = self.line(self.x_a[0]+int(np.random.rand()*10+10),0)
+            x_d = self.line(self.x_a[0]+int(np.random.rand()*10+20),0)
         # oś OX: A > b > d oraz II i III ćwiartka:
         elif (self.d0[1]-self.x_a[1]==0 and self.d0[0]<self.x_a[0]) or (self.d0[0]<self.x_a[0] and self.d0[1]>self.x_a[1]) or (self.d0[0]<self.x_a[0] and self.d0[1]<self.x_a[1]):
-            x_b = self.line(self.x_a[0]-int(np.rand()*10+10),0)
-            x_d = self.line(self.x_a[0]-int(np.rand()*10+20),0)
+            x_b = self.line(self.x_a[0]-int(np.random.rand()*10+10),0)
+            x_d = self.line(self.x_a[0]-int(np.random.rand()*10+20),0)
         # oś OY: A < b < d 
         elif self.d0[0]-self.x_a[0]==0 and self.d0[1]>self.x_a[1]:
             x_b = self.line(self.x_a[0],1)
@@ -196,8 +198,8 @@ class MplWidget(QWidget):
         if len(self.d0) == 2:
             try:
                 global i
-                x = np.linspace( -self.d0[0]-10, self.d0[0]+10, self.L)
-                y = np.linspace( -self.d0[1]-10, self.d0[1]+10, self.L)
+                x = np.linspace( -self.d0[0]-30, self.d0[0]+30, self.L)
+                y = np.linspace( -self.d0[1]-30, self.d0[1]+30, self.L)
 
                 X, Y = np.meshgrid(x,y)
 
@@ -208,11 +210,7 @@ class MplWidget(QWidget):
 
                 x_b,x_d=self.setupControls()
 
-                Fa = self.F_goal(self.x_a)
-                Fb = self.F_goal(x_b)
-                Fd = self.F_goal(x_d)
-
-                result = self.minimum3D(self.x_a,x_b,x_d,Fa,Fb,Fd)
+                result = self.minimum3D(self.x_a,x_b,x_d)
 
                 if(result == None):
                     return self.vector_xm, result
