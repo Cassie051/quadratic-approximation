@@ -282,6 +282,7 @@ class MplWidget(QWidget):
                 Z = eval(funkcja)
 
                 x_b,x_d,x_c,x_e,x_g = self.setupControls()
+                value_xm = []
 
                 result = self.minimum3D(self.x_a,x_b,x_d,x_c,x_e,x_g,2)
 

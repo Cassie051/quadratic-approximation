@@ -165,12 +165,12 @@ class Ui_MainWindow(object):
 
     # @pyqtSlot()
     def on_click(self):
-        self.textBrowser.append(f'Obliczam warstwice dla {self.set_function.text()}')
+        self.textBrowser.append(f'\nObliczam warstwice dla {self.set_function.text()}')
         xm, value_xm, result, value_result, value_start = self.widget.rysuj(self.start_point.text(), self.direction_d0.text(), self.estimation.text(), self.literation.text(), self.set_function.text())
         if value_result == None:
             self.textBrowser.append("Nie znaleziono minimum : - :")
         else:
-            self.textBrowser.append(f'Gotowe!')
+            self.textBrowser.append(f'----------- Gotowe! -----------')
             self.textBrowser.append(f'Wartość funkcji w punkcie początkowym {value_start} dla punktu [{self.start_point.text()}]\n')
             self.textBrowser.append(f'Wektor X: {xm}')
             self.textBrowser.append(f'Wektor wartości X: {value_xm}\n')
