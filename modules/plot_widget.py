@@ -50,7 +50,7 @@ class MplWidget(QWidget):
     def F_goal(self, p):
         code = parser.expr(self.formula).compile()
         x1 = p[0]
-        x2 = p[0]
+        x2 = p[1]
         x3 = p[0]
         x4 = p[0]
         x5 = p[0]
