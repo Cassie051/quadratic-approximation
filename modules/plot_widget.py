@@ -87,6 +87,9 @@ class MplWidget(QWidget):
         while (d[0]-a[0]>=self.E2) or l != self.L:      
             a_prev = a
             b_prev = b
+            c_prev = c
+            e_prev = e
+            g_prev = g
             d_prev = d
             # Lx1 = fa*(b[0]**2-d[0]**2)+fb*(d[0]**2-a[0]**2)+fd*(a[0]**2-b[0]**2)
             # Mx1 = 2*(fa*(b[0]-d[0])+fb*(d[0]-a[0])+fd*(a[0]-b[0]))
