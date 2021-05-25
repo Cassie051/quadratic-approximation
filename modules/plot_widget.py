@@ -34,6 +34,7 @@ class MplWidget(QWidget):
     def line(self, px,dir):
         p=[]
         p.append(px)
+
         if self.d0[0]-self.x_a[0]==0:
             if dir == 1 or dir == 2 or dir ==3 or dir==4 or dir==5:
                 p.append(px+int(np.random.rand()*10+5*dir))
@@ -70,6 +71,7 @@ class MplWidget(QWidget):
         g = g_prev
         d = d_prev
         l = 0
+
         tab = [a, b, c, e, g, d]
         tab.sort()
         a = tab[0]
@@ -219,6 +221,7 @@ class MplWidget(QWidget):
                 msg.exec_()
                 return None
 
+
     def setupControls(self):
         # oś OX: A < b < d oraz I i IV ćwiartka:
         if (self.d0[1]-self.x_a[1]==0 and self.d0[0]>self.x_a[0]) or (self.d0[0]>self.x_a[0] and self.d0[1]>self.x_a[1]) or (self.d0[0]>self.x_a[0] and self.d0[1]<self.x_a[1]):
@@ -251,8 +254,6 @@ class MplWidget(QWidget):
         return x_b,x_d,x_c,x_e,x_g     
 
     def rysuj(self, start, direction, estimation, literation, set_function ):
-        self.canvas.axes = self.canvas.figure.add_subplot(111)
-
         self.canvas.axes.clear()
 
         self.vector_xm = []
@@ -280,12 +281,12 @@ class MplWidget(QWidget):
                 funkcja = funkcja.replace("x2","Y")
                 Z = eval(funkcja)
 
-                x_b,x_d,x_c,x_e,x_g=self.setupControls()
+                x_b,x_d,x_c,x_e,x_g = self.setupControls()
 
                 result = self.minimum3D(self.x_a,x_b,x_d,x_c,x_e,x_g,2)
 
                 if(result == None):
-                    return self.vector_xm, result
+                    return self.vector_xm, value_xm, result, result, self.F_goal(self.x_a)
 
                 self.canvas.axes.clear()
 
@@ -296,30 +297,28 @@ class MplWidget(QWidget):
                 try:
                     xm_x1= []
                     xm_x2= []
+                    self.canvas.axes.scatter(self.x_a[0],self.x_a[1],c="pink")
+                    for i in self.vector_xm:
+                        value_xm.append(self.F_goal(i))
                     for i in range(len(self.vector_xm)):
                         xm_x1.append(self.vector_xm[i][0])
                         xm_x2.append(self.vector_xm[i][1])
-                        if(i==0):
-                            self.canvas.axes.scatter(self.x_a[0],self.x_a[1],c="pink")
                         self.canvas.axes.scatter(self.vector_xm[i][0],self.vector_xm[i][1],c="red")
                     self.canvas.axes.plot(xm_x1,xm_x2)
                     self.canvas.draw()
-                    return self.vector_xm, result
+                    return self.vector_xm, value_xm, result, self.F_goal(result), self.F_goal(self.x_a)
                 except:
                     msg = QMessageBox()
-                    msg.setText("Błąd")
                     msg.setInformativeText('Wystąpił nieoczekiwany błąd przy rysowaniu!')
                     msg.setWindowTitle("Błąd")
                     msg.exec_()
             except:
                 msg = QMessageBox()
-                msg.setText("Błąd")
-                msg.setInformativeText('Nie podano funkcji!')
+                msg.setInformativeText('Podano nieprawidłową funkcję!')
                 msg.setWindowTitle("Błąd")
                 msg.exec_()
         else:
              msg = QMessageBox()
-             msg.setText("Błąd")
              msg.setInformativeText('Nie podano kierunku!')
              msg.setWindowTitle("Błąd")
              msg.exec_()
