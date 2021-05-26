@@ -83,7 +83,7 @@ class MplWidget(QWidget):
             l += 1
             self.iterations = l
 
-            return x_min
+        return x_min
 
     def rysuj(self, start, direction, estimation, literation, set_function ):
         self.canvas.axes.clear()
@@ -100,13 +100,17 @@ class MplWidget(QWidget):
         self.L = int(literation)
 
         set_function = set_function.replace("^","**")
+        set_function = set_function.replace("cos","np.cos")
+        set_function = set_function.replace("sin","np.sin")
         self.formula = set_function
 
         if len(self.d0) != 0:
             try:
                 global i
-                x = np.linspace( -self.d0[0]-5, self.d0[0]+5, self.L)
-                y = np.linspace( -self.d0[1]-5, self.d0[1]+5, self.L)
+                tab = [self.d0[0], self.d0[1], self.x_a[0], self.x_a[1]]
+                max_val = max(tab)
+                x = np.linspace( -self.x_a[0]-5*max_val, self.x_a[0]+5*max_val, self.L)
+                y = np.linspace( -self.x_a[1]-5*max_val, self.x_a[1]+5*max_val, self.L)
 
                 X, Y = np.meshgrid(x,y)
 
@@ -132,12 +136,12 @@ class MplWidget(QWidget):
                         xm_x1= []
                         xm_x2= []
                         self.canvas.axes.scatter(self.x_a[0],self.x_a[1],c="pink")
-                        for i in self.vector_xm:
-                            self.value_xm.append(self.F_goal(i))
                         for i in range(len(self.vector_xm)):
                             xm_x1.append(self.vector_xm[i][0])
                             xm_x2.append(self.vector_xm[i][1])
                             self.canvas.axes.scatter(self.vector_xm[i][0],self.vector_xm[i][1],c="red")
+                        xm_x1.append(self.x_a[0])
+                        xm_x2.append(self.x_a[1])
                         self.canvas.axes.plot(xm_x1,xm_x2)
                         self.canvas.draw()
                         return self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations 
