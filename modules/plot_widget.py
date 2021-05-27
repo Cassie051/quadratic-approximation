@@ -52,9 +52,9 @@ class MplWidget(QWidget):
     def minimum(self,x_0,x_1,x_2):
         np.seterr(divide='ignore', invalid='ignore')
         l = 0
-        x_prevmin = x_0
+        x_prevmin = x_2
         x_min = 0
-        while np.linalg.norm(x_prevmin-x_min) > self.E2 or l < self.L:
+        while np.linalg.norm(x_prevmin-x_min) > self.E2 and l < self.L:
             f0 = self.F_goal(x_0)
             f1 = self.F_goal(x_1)
             f2 = self.F_goal(x_2)
