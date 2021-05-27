@@ -70,7 +70,7 @@ class MplWidget(QWidget):
             tab_x = np.array([x_0,x_1,x_2])
             x_prevmin = np.amin(tab_x)
             tab_x[max_x] = x_min
-            tab_x.sort()
+            tab_x.sort(axis=0)
             x_0 = tab_x[0]
             x_1 = tab_x[1]
             x_2 = tab_x[2]
