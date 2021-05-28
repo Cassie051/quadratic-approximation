@@ -55,33 +55,35 @@ class MplWidget(QWidget):
     def minimum(self,x_0,x_1,x_2):
         np.seterr(divide='ignore', invalid='ignore')
         l = 0
-        x_prevmin = x_2
-        x_min = 0
-        while np.linalg.norm(x_prevmin-x_min) > self.E2 and l < self.L:
+        x_min = x_2
+        x_min_tab = []
+        x_min_tab.append(x_0)
+        while True:
+            if np.linalg.norm(x_min_tab[-1]-x_min) <= self.E2 or l >= self.L:
+                break
+            print(np.linalg.norm(x_min_tab[-1]-x_min))
             f0 = self.F_goal(x_0)
             f1 = self.F_goal(x_1)
             f2 = self.F_goal(x_2)
-
             L_min = f0 * (x_1**2-x_2**2) + f1 * (x_2**2-x_0**2) + f2 * (x_0**2-x_1**2)
             M_min = 2 * (f0 * (x_1-x_2) + f1 * (x_2-x_0) + f2 * (x_0-x_1))
             x_min = L_min/M_min
-
             tab_f = [f0, f1, f2]
             max_f = np.amax(tab_f)
             max_x = tab_f.index(max_f)
-
             tab_x = np.array([x_0,x_1,x_2])
-            x_prevmin = np.amin(tab_x)
             tab_x[max_x] = x_min
             tab_x.sort(axis=0)
             x_0 = tab_x[0]
             x_1 = tab_x[1]
             x_2 = tab_x[2]
-
             self.vector_xm.append(x_min)
+            print(x_min)
+            print(self.vector_xm)
             self.value_xm.append(self.F_goal(x_min))
-            self.critical.append(np.linalg.norm(x_prevmin-x_min))
+            self.critical.append(np.linalg.norm(x_min_tab[-1]-x_min))
             l += 1
+            x_min_tab.append(x_min)
             self.iterations = l
 
         return x_min
@@ -156,7 +158,7 @@ class MplWidget(QWidget):
                     msg.exec_()
             except:
                 msg = QMessageBox()
-                msg.setInformativeText('Podano nieprawidłową funkcję!',x_1,x_2)
+                msg.setInformativeText('Podano nieprawidłową funkcję!')
                 msg.setWindowTitle("Błąd")
                 msg.exec_()
         else:
