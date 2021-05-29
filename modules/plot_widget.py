@@ -151,6 +151,7 @@ class MplWidget(QWidget):
                     else:
                         self.canvas.figure.add_subplot(111)
                         self.canvas.axes.clear()
+                        return self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations
                 except:
                     msg = QMessageBox()
                     msg.setInformativeText('Wystąpił nieoczekiwany błąd przy rysowaniu!')
