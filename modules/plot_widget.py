@@ -61,7 +61,6 @@ class MplWidget(QWidget):
         while True:
             if np.linalg.norm(x_min_tab[-1]-x_min) <= self.E2 or l >= self.L:
                 break
-            print(np.linalg.norm(x_min_tab[-1]-x_min))
             f0 = self.F_goal(x_0)
             f1 = self.F_goal(x_1)
             f2 = self.F_goal(x_2)
@@ -87,6 +86,7 @@ class MplWidget(QWidget):
                     else:
                         f_min_ind = tab_f.index(f_min_tab[-1])
                         x_min = tab_x[f_min_ind]
+
                     self.vector_xm.append(x_min)
                     self.value_xm.append(self.F_goal(x_min))
                     self.critical.append(np.linalg.norm(f_min_tab[-1]-f_min))
@@ -104,8 +104,6 @@ class MplWidget(QWidget):
             x_1 = tab_x[1]
             x_2 = tab_x[2]
             self.vector_xm.append(x_min)
-            print(x_min)
-            print(self.vector_xm)
             self.value_xm.append(self.F_goal(x_min))
             self.critical.append(np.linalg.norm(x_min_tab[-1]-x_min))
             l += 1
