@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from modules.plot_widget import MplWidget
+import numpy as np
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -167,17 +168,22 @@ class Ui_MainWindow(object):
     def on_click(self):
         self.textBrowser.append(f'\nObliczam warstwice dla {self.set_function.text()}')
         xm, value_xm, result, value_result, value_start, critical, iter = self.widget.rysuj(self.start_point.text(), self.direction_d0.text(), self.estimation.text(), self.literation.text(), self.set_function.text())
+        start = [float(x) for x in self.start_point.text().split(',')]
+        start = np.array(start)
         if value_result == None:
             self.textBrowser.append("Nie znaleziono minimum : - :")
         else:
             self.textBrowser.append(f'----------- Gotowe! -----------')
             i = 0
             self.textBrowser.append(f'Wartość funkcji w punkcie początkowym {value_start} dla punktu [{self.start_point.text()}]')
-            for i in range(1, iter+1):
-                self.textBrowser.append(f'Iteracja {i}')
-                self.textBrowser.append(f'Punkt X: {xm[i-1]}')
-                self.textBrowser.append(f'Wartość w punkcie X: {value_xm[i-1]}')
-                self.textBrowser.append(f'Kryterium stopu: {critical[i-1]}\n')
+            if(start[0] == xm[0][0] and start[1] == xm[0][1]):
+                pass
+            else:
+                for i in range(1, iter+1):
+                    self.textBrowser.append(f'Iteracja {i}')
+                    self.textBrowser.append(f'Punkt X: {xm[i-1]}')
+                    self.textBrowser.append(f'Wartość w punkcie X: {value_xm[i-1]}')
+                    self.textBrowser.append(f'Kryterium stopu: {critical[i-1]}\n')
 
             self.textBrowser.append(f'Otrzymana wartość minimum {value_result} w punkcie {result}')
 
