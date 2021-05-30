@@ -87,7 +87,11 @@ class MplWidget(QWidget):
                     else:
                         f_min_ind = tab_f.index(f_min_tab[-1])
                         x_min = tab_x[f_min_ind]
+                    self.vector_xm.append(x_min)
+                    self.value_xm.append(self.F_goal(x_min))
+                    self.critical.append(np.linalg.norm(f_min_tab[-1]-f_min))
                     i += 1
+                    self.iterations = i
                 break
             x_min = L_min/M_min
             tab_f = [f0, f1, f2]
@@ -132,8 +136,10 @@ class MplWidget(QWidget):
         if len(self.d0) != 0:
             try:
                 global i
-                tab = [self.d0[0], self.d0[1], self.x_a[0], self.x_a[1]]
+                tab = [abs(self.d0[0]), abs(self.d0[1]), abs(self.x_a[0]), abs(self.x_a[1])]
                 max_val = max(tab)
+                if max_val == 0:
+                    max_val = 1
                 x = np.linspace( -self.x_a[0]-5*max_val, self.x_a[0]+5*max_val, self.L)
                 y = np.linspace( -self.x_a[1]-5*max_val, self.x_a[1]+5*max_val, self.L)
 
