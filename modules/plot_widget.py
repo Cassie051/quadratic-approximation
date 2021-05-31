@@ -175,8 +175,8 @@ class MplWidget(QWidget):
                         self.canvas.draw()
                         return self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations 
                     else:
-                        self.canvas.figure.add_subplot(111)
                         self.canvas.axes.clear()
+                        self.canvas.draw()
                         return self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations
                 except:
                     msg = QMessageBox()
