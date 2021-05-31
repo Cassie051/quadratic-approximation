@@ -42,12 +42,21 @@ class MplWidget(QWidget):
         return out
 
     def setupControls(self,step):
-        x_1 = self.x_a +  step * self.d0
+        if self.d0[0] > self.x_a[0] or self.d0[1]>self.x_a[1]:
+            x_1 = self.x_a -  step * self.d0
+        else:
+            x_1 = self.x_a +  step * self.d0
         if self.F_goal(self.x_a) > self.F_goal(x_1):
-            x_2 = self.x_a + 2 * step * self.d0
+            if self.d0[0] > self.x_a[0] or self.d0[1]>self.x_a[1]:
+                x_2 = self.x_a - 2 * step * self.d0
+            else:
+                x_2 = self.x_a + 2 * step * self.d0
         else:
             x_2 = x_1
-            x_1 = self.x_a + 0.5 * step * self.d0
+            if self.d0[0] > self.x_a[0] or self.d0[1]>self.x_a[1]:
+                x_1 = self.x_a - 0.5 * step * self.d0
+            else:
+                x_1 = self.x_a + 0.5 * step * self.d0
         x_2 = np.array(x_2)
         x_1 = np.array(x_1)
         return x_1,x_2
@@ -72,22 +81,28 @@ class MplWidget(QWidget):
                 f_min_tab = []
                 tab_f = [f0, f1, f2]
                 max_f = np.amax(tab_f)
-                min_f = np.amin(tab_f)
                 max_x = tab_f.index(max_f)
                 tab_x = np.array([x_0,x_1,x_2])
-                f_min_tab.append(self.F_goal(x_0))
-                f_min = tab_x[max_x]
+                f_min_tab.append(np.amin(tab_f))
+                f_min = tab_f[max_x]
                 while np.linalg.norm(f_min_tab[-1]-f_min) > self.E2  and i < self.L:
-                    m = x_0+x_2/2
+                    m = (x_0+x_2)/2
                     f_min = self.F_goal(m)
-                    x_2 = m
+                    if self.F_goal(x_0) > self.F_goal(x_2):
+                        x_0 = m
+                    else: 
+                        x_2 = m
+                    f0 = self.F_goal(x_0)
+                    f1 = self.F_goal(x_1)
+                    f2 = self.F_goal(x_2)
+                    tab_f = [f0, f1, f2]
+                    tab_x = np.array([x_0,x_1,x_2])
                     if f_min < f_min_tab[-1]:
                         f_min_tab.append(f_min)
                         x_min = m
                     else:
                         f_min_ind = tab_f.index(f_min_tab[-1])
                         x_min = tab_x[f_min_ind]
-
                     self.vector_xm.append(x_min)
                     self.value_xm.append(self.F_goal(x_min))
                     self.critical.append(np.linalg.norm(f_min_tab[-1]-f_min))
@@ -99,6 +114,10 @@ class MplWidget(QWidget):
             max_f = np.amax(tab_f)
             max_x = tab_f.index(max_f)
             tab_x = np.array([x_0,x_1,x_2])
+            if x_min.all() > np.amax(tab_x,axis=0).all():
+                x_min = np.amax(tab_x,axis=0)
+            else:
+                x_min = x_min
             tab_x[max_x] = x_min
             tab_x.sort(axis=0)
             x_0 = tab_x[0]
