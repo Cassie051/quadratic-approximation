@@ -42,18 +42,18 @@ class MplWidget(QWidget):
         return out
 
     def setupControls(self,step):
-        if self.d0[0] > self.x_a[0] or self.d0[1]>self.x_a[1]:
+        if (self.d0[0] > self.x_a[0] and self.d0[1]==self.x_a[1]==0) or (self.d0[1] < self.x_a[1] and self.d0[0]==self.x_a[0]==0):
             x_1 = self.x_a -  step * self.d0
         else:
             x_1 = self.x_a +  step * self.d0
         if self.F_goal(self.x_a) > self.F_goal(x_1):
-            if self.d0[0] > self.x_a[0] or self.d0[1]>self.x_a[1]:
+            if (self.d0[0] > self.x_a[0] and self.d0[1]==self.x_a[1]==0) or (self.d0[1] < self.x_a[1] and self.d0[0]==self.x_a[0]==0):
                 x_2 = self.x_a - 2 * step * self.d0
             else:
                 x_2 = self.x_a + 2 * step * self.d0
         else:
             x_2 = x_1
-            if self.d0[0] > self.x_a[0] or self.d0[1]>self.x_a[1]:
+            if (self.d0[0] > self.x_a[0] and self.d0[1]==self.x_a[1]==0) or (self.d0[1] < self.x_a[1] and self.d0[0]==self.x_a[0]==0):
                 x_1 = self.x_a - 0.5 * step * self.d0
             else:
                 x_1 = self.x_a + 0.5 * step * self.d0
