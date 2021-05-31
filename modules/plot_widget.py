@@ -116,6 +116,8 @@ class MplWidget(QWidget):
             tab_x = np.array([x_0,x_1,x_2])
             if x_min.all() > np.amax(tab_x,axis=0).all():
                 x_min = np.amax(tab_x,axis=0)
+            elif x_min.all() > np.amin(tab_x,axis=0).all():
+                x_min = np.amin(tab_x,axis=0)
             else:
                 x_min = x_min
             tab_x[max_x] = x_min
