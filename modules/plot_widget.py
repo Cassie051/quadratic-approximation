@@ -106,11 +106,10 @@ class MplWidget(QWidget):
             x_2 = tab_x[2]
             self.vector_xm.append(x_min)
             self.value_xm.append(self.F_goal(x_min))
-            self.critical.append(np.linalg.norm(x_min_tab[-1]-x_min))
             l += 1
             x_min_tab.append(x_min)
+            self.critical.append(np.linalg.norm(x_min_tab[-1]-x_min))
             self.iterations = l
-            print('control',np.linalg.norm(x_min_tab[-1]-x_min))
 
         return x_min
 
