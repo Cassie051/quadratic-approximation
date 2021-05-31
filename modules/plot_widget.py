@@ -66,7 +66,8 @@ class MplWidget(QWidget):
             f2 = self.F_goal(x_2)
             L_min = f0 * (x_1**2-x_2**2) + f1 * (x_2**2-x_0**2) + f2 * (x_0**2-x_1**2)
             M_min = 2 * (f0 * (x_1-x_2) + f1 * (x_2-x_0) + f2 * (x_0-x_1))
-            if np.where(M_min == 0) != None:
+            check = np.where(M_min == 0)
+            if check[0].size != 0:
                 i = 0
                 f_min_tab = []
                 tab_f = [f0, f1, f2]
@@ -109,6 +110,7 @@ class MplWidget(QWidget):
             l += 1
             x_min_tab.append(x_min)
             self.iterations = l
+            print('control',np.linalg.norm(x_min_tab[-1]-x_min))
 
         return x_min
 
