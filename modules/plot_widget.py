@@ -18,6 +18,7 @@ class MplWidget(QWidget):
         self.critical = []
         self.x_a = []
         self.d0 = []
+        self.x012 = []
 
         self.E2 = 0
         self.L = 0
@@ -117,6 +118,7 @@ class MplWidget(QWidget):
             x_0 = tab_x[0]
             x_1 = tab_x[1]
             x_2 = tab_x[2]
+            self.x012.append(tab_x)
             self.vector_xm.append(x_min)
             self.value_xm.append(self.F_goal(x_min))
             self.critical.append(np.linalg.norm(x_min_tab[-1]-x_min))
@@ -150,12 +152,8 @@ class MplWidget(QWidget):
         if len(self.d0) != 0:
             try:
                 global i
-                tab = [abs(self.d0[0]), abs(self.d0[1]), abs(self.x_a[0]), abs(self.x_a[1])]
-                max_val = max(tab)
-                if max_val == 0:
-                    max_val = 1
-                x = np.linspace( -self.x_a[0]-5*max_val, self.x_a[0]+5*max_val, self.L)
-                y = np.linspace( -self.x_a[1]-5*max_val, self.x_a[1]+5*max_val, self.L)
+                x = np.linspace( -5, 5, self.L)
+                y = np.linspace( -5, 5, self.L)
 
                 X, Y = np.meshgrid(x,y)
 
@@ -165,7 +163,7 @@ class MplWidget(QWidget):
                 result = self.minimum(self.x_a,x_1,x_2)
 
                 if(result.all() == None):
-                    return self.vector_xm, self.value_xm, result, result, self.F_goal(self.x_a), self.critical, self.iterations 
+                    return self.x012, self.vector_xm, self.value_xm, result, result, self.F_goal(self.x_a), self.critical, self.iterations 
                 
                 try:
                     if(len(self.d0) == 2):
@@ -189,11 +187,11 @@ class MplWidget(QWidget):
                         xm_x2.append(self.x_a[1])
                         self.canvas.axes.plot(xm_x1,xm_x2)
                         self.canvas.draw()
-                        return self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations 
+                        return self.x012, self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations 
                     else:
                         self.canvas.axes.clear()
                         self.canvas.draw()
-                        return self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations
+                        return self.x012, self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations
                 except:
                     msg = QMessageBox()
                     msg.setInformativeText('Wystąpił nieoczekiwany błąd przy rysowaniu!')
