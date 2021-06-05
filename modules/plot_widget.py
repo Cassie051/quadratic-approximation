@@ -73,7 +73,8 @@ class MplWidget(QWidget):
                 tab_x = np.array([x_0,x_1,x_2])
                 f_min_tab.append(np.amin(tab_f))
                 f_min = tab_f[max_x]
-                while np.linalg.norm(f_min_tab[-1]-f_min) > self.E2  and i < self.L:
+                while True:
+                    print('sd')
                     m = (x_0+x_2)/2
                     f_min = self.F_goal(m)
                     if self.F_goal(x_0) > self.F_goal(x_2):
@@ -96,31 +97,32 @@ class MplWidget(QWidget):
                     self.critical.append(np.linalg.norm(f_min_tab[-1]-f_min))
                     i += 1
                     self.iterations = i
-                break
-            x_min = L_min/M_min
-            tab_x = np.array([x_0,x_1,x_2])
-            if x_min.all() < np.amin(tab_x,axis=0).all():
-                x_min = np.amin(tab_x,axis=0)
-            elif x_min.all() > np.amax(tab_x,axis=0).all():
-                x_min = np.amax(tab_x,axis=0)
-            tab_f = [f0, f1, f2]
-            max_f = np.amax(tab_f)
-            max_x = tab_f.index(max_f)
-            tab_x = np.array([x_0,x_1,x_2])
-            tab_x[max_x] = x_min
-            tab_x.sort(axis=0)
-            x_0 = tab_x[0]
-            x_1 = tab_x[1]
-            x_2 = tab_x[2]
-            self.x012.append(tab_x)
-            self.vector_xm.append(x_min)
-            self.value_xm.append(self.F_goal(x_min))
-            self.critical.append(np.linalg.norm(x_min_tab[-1]-x_min))
-            l += 1
-            if np.linalg.norm(x_min_tab[-1]-x_min) <= self.E2 or l >= self.L:
-                break
-            x_min_tab.append(x_min)
-            self.iterations = l
+                    if np.linalg.norm(f_min_tab[-1]-f_min) <= self.E2  and i >= self.L:
+                        break
+            else:
+                x_min = L_min/M_min           
+                tab_f = [f0, f1, f2]
+                max_f = np.amax(tab_f)
+                min_f = np.amin(tab_f)
+                max_x = tab_f.index(max_f)
+                min_x = tab_f.index(min_f)
+                tab_x = np.array([x_0,x_1,x_2])
+                if x_min.all() < np.amin(tab_x,axis=0).all() or x_min.all() > np.amax(tab_x,axis=0).all():
+                    x_min = tab_x[min_x]
+                tab_x[max_x] = x_min
+                tab_x.sort(axis=0)
+                x_0 = tab_x[0]
+                x_1 = tab_x[1]
+                x_2 = tab_x[2]
+                self.x012.append(tab_x)
+                self.vector_xm.append(x_min)
+                self.value_xm.append(self.F_goal(x_min))
+                self.critical.append(np.linalg.norm(x_min_tab[-1]-x_min))
+                l += 1
+                if np.linalg.norm(x_min_tab[-1]-x_min) <= self.E2 and l >= self.L:
+                    break
+                x_min_tab.append(x_min)
+                self.iterations = l
         return x_min
 
     def rysuj(self, start, direction, estimation, literation, set_function ):

@@ -182,9 +182,9 @@ class Ui_MainWindow(object):
             else:
                 for i in range(1, iter+1):
                     self.textBrowser.append(f'Iteracja {i}')
-                    self.textBrowser.append(f'x0: {x012[i][0]}')
-                    self.textBrowser.append(f'x1: {x012[i][1]}')
-                    self.textBrowser.append(f'x2: {x012[i][2]}')
+                    self.textBrowser.append(f'x0: {x012[i-1][0]}')
+                    self.textBrowser.append(f'x1: {x012[i-1][1]}')
+                    self.textBrowser.append(f'x2: {x012[i-1][2]}')
                     self.textBrowser.append(f'xm: {xm[i-1]}')
                     self.textBrowser.append(f'Wartość w punkcie xm: {value_xm[i-1]}')
                     self.textBrowser.append(f'Kryterium stopu: {critical[i-1]}\n')
