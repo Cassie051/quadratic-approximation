@@ -1,5 +1,5 @@
 import sys
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
 
 from modules.app import Ui_MainWindow
 from modules.plot_widget import MplWidget
@@ -9,6 +9,8 @@ def main():
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    appIcon = QtGui.QIcon('./icons/comcos.png')
+    app.setWindowIcon(appIcon)
     MainWindow.show()
     sys.exit(app.exec_())
 

@@ -15,7 +15,7 @@ import numpy as np
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1100, 600)
+        MainWindow.resize(1300, 800)
         font = QtGui.QFont()
         font.setFamily("Roboto")
         MainWindow.setFont(font)
@@ -164,10 +164,11 @@ class Ui_MainWindow(object):
     def define_funnctionality(self, MainWindow):
         self.pushButton.clicked.connect(self.on_click)
 
+
     # @pyqtSlot()
     def on_click(self):
         self.textBrowser.append(f'\nObliczam warstwice dla {self.set_function.text()}')
-        xm, value_xm, result, value_result, value_start, critical, iter = self.widget.rysuj(self.start_point.text(), self.direction_d0.text(), self.estimation.text(), self.literation.text(), self.set_function.text())
+        x012, xm, value_xm, result, value_result, value_start, critical, iter = self.widget.rysuj(self.start_point.text(), self.direction_d0.text(), self.estimation.text(), self.literation.text(), self.set_function.text())
         start = [float(x) for x in self.start_point.text().split(',')]
         start = np.array(start)
         if value_result == None:
@@ -176,14 +177,17 @@ class Ui_MainWindow(object):
             self.textBrowser.append(f'----------- Gotowe! -----------')
             i = 0
             self.textBrowser.append(f'Wartość funkcji w punkcie początkowym {value_start} dla punktu [{self.start_point.text()}]')
-            if(start[0] == xm[0][0] and start[1] == xm[0][1]):
-                pass
-            else:
-                for i in range(1, iter+1):
-                    self.textBrowser.append(f'Iteracja {i}')
-                    self.textBrowser.append(f'Punkt X: {xm[i-1]}')
-                    self.textBrowser.append(f'Wartość w punkcie X: {value_xm[i-1]}')
-                    self.textBrowser.append(f'Kryterium stopu: {critical[i-1]}\n')
+            # if(start[0] == xm[0][0] and start[1] == xm[0][1]):
+            #     pass
+            # else:
+            for i in range(1, iter+1):
+                self.textBrowser.append(f'Iteracja {i}')
+                self.textBrowser.append(f'x0: {x012[i-1][0]}')
+                self.textBrowser.append(f'x1: {x012[i-1][1]}')
+                self.textBrowser.append(f'x2: {x012[i-1][2]}')
+                self.textBrowser.append(f'xm: {xm[i-1]}')
+                self.textBrowser.append(f'Wartość w punkcie xm: {value_xm[i-1]}')
+                self.textBrowser.append(f'Kryterium stopu: {critical[i-1]}\n')
 
             self.textBrowser.append(f'Otrzymana wartość minimum {value_result} w punkcie {result}')
 

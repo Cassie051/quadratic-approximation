@@ -18,6 +18,7 @@ class MplWidget(QWidget):
         self.critical = []
         self.x_a = []
         self.d0 = []
+        self.x012 = []
 
         self.E2 = 0
         self.L = 0
@@ -48,69 +49,63 @@ class MplWidget(QWidget):
         else:
             x_2 = x_1
             x_1 = self.x_a + 0.5 * step * self.d0
-        x_2 = np.array(x_2)
-        x_1 = np.array(x_1)
         return x_1,x_2
 
-    def minimum(self,x_0,x_1,x_2):
-        np.seterr(divide='ignore', invalid='ignore')
-        l = 0
-        x_min = x_2
-        x_min_tab = []
-        x_min_tab.append(x_0)
+    def NewControls(self, start_point):
+        step = 2
+        x_1 = start_point +  step * self.d0
+        if self.F_goal(start_point) > self.F_goal(x_1):
+            x_2 = start_point + 2 * step * self.d0
+        else:
+            x_2 = x_1
+            x_1 = start_point + 0.5 * step * self.d0
+        return x_1,x_2
+
+    def minimum(self,x0,x1,x2):
+        numberOfIterations = 0
+        currXMin = self.x_a        
+        x = [x0, x1, x2]        
+        y = [self.F_goal(x0), self.F_goal(x1), self.F_goal(x2)]
         while True:
-            if np.linalg.norm(x_min_tab[-1]-x_min) <= self.E2 or l >= self.L:
-                break
-            f0 = self.F_goal(x_0)
-            f1 = self.F_goal(x_1)
-            f2 = self.F_goal(x_2)
-            L_min = f0 * (x_1**2-x_2**2) + f1 * (x_2**2-x_0**2) + f2 * (x_0**2-x_1**2)
-            M_min = 2 * (f0 * (x_1-x_2) + f1 * (x_2-x_0) + f2 * (x_0-x_1))
-            if np.where(M_min == 0) != None:
-                i = 0
-                f_min_tab = []
-                tab_f = [f0, f1, f2]
-                max_f = np.amax(tab_f)
-                min_f = np.amin(tab_f)
-                max_x = tab_f.index(max_f)
-                tab_x = np.array([x_0,x_1,x_2])
-                f_min_tab.append(self.F_goal(x_0))
-                f_min = tab_x[max_x]
-                while np.linalg.norm(f_min_tab[-1]-f_min) > self.E2  and i < self.L:
-                    m = x_0+x_2/2
-                    f_min = self.F_goal(m)
-                    x_2 = m
-                    if f_min < f_min_tab[-1]:
-                        f_min_tab.append(f_min)
-                        x_min = m
-                    else:
-                        f_min_ind = tab_f.index(f_min_tab[-1])
-                        x_min = tab_x[f_min_ind]
+            numberOfIterations += 1
+            self.iterations = numberOfIterations
+            self.x012.append(x)
+            Licznik = y[0] * (x[1]**2-x[2]**2) + y[1] * (x[2]**2-x[0]**2) + y[2] * (x[0]**2-x[1]**2)
+            Mianownik = 2 * (y[0] * (x[1]-x[2]) + y[1] * (x[2]-x[0]) + y[2] * (x[0]-x[1]))
+            checkIfzero = np.where(Mianownik == 0)
+            if(checkIfzero[0].size != 0):
+                self.iterations -= 1
+                return currXMin
+            xMin = Licznik/Mianownik
+            indexOfMaxValue = np.argmax(y)
+            if(y[indexOfMaxValue] < self.F_goal(xMin)):
+                x[1], x[2] = self.NewControls(x[indexOfMaxValue])
+                y = [self.F_goal(x[0]), self.F_goal(x[1]), self.F_goal(x[2])]
+                numberOfIterations -= 1
+                self.iterations -= 1
+            else:
+                x[indexOfMaxValue] = xMin
+                y[indexOfMaxValue] = self.F_goal(xMin)
 
-                    self.vector_xm.append(x_min)
-                    self.value_xm.append(self.F_goal(x_min))
-                    self.critical.append(np.linalg.norm(f_min_tab[-1]-f_min))
-                    i += 1
-                    self.iterations = i
-                break
-            x_min = L_min/M_min
-            tab_f = [f0, f1, f2]
-            max_f = np.amax(tab_f)
-            max_x = tab_f.index(max_f)
-            tab_x = np.array([x_0,x_1,x_2])
-            tab_x[max_x] = x_min
-            tab_x.sort(axis=0)
-            x_0 = tab_x[0]
-            x_1 = tab_x[1]
-            x_2 = tab_x[2]
-            self.vector_xm.append(x_min)
-            self.value_xm.append(self.F_goal(x_min))
-            self.critical.append(np.linalg.norm(x_min_tab[-1]-x_min))
-            l += 1
-            x_min_tab.append(x_min)
-            self.iterations = l
+                self.vector_xm.append(xMin)
+                self.value_xm.append(self.F_goal(xMin))
+                self.critical.append(abs(self.F_goal(currXMin) - self.F_goal(xMin)))
 
-        return x_min
+                for i in range(0,len(x)):
+                    for j in range(1,len(x)):
+                        if(x[j-1][0] > x[j][0]):
+                            t = x[j-1]
+                            x[j-1] = x[j]
+                            x[j] = t
+                            t= y[j-1]
+                            y[j-1] = y[j]
+                            y[j] = t
+                
+                if(abs(self.F_goal(xMin) - self.F_goal(currXMin)) < self.E2 or numberOfIterations>= self.L):
+                    break
+                
+                currXMin = xMin
+        return xMin
 
     def rysuj(self, start, direction, estimation, literation, set_function ):
         self.canvas.axes.clear()
@@ -134,12 +129,8 @@ class MplWidget(QWidget):
         if len(self.d0) != 0:
             try:
                 global i
-                tab = [abs(self.d0[0]), abs(self.d0[1]), abs(self.x_a[0]), abs(self.x_a[1])]
-                max_val = max(tab)
-                if max_val == 0:
-                    max_val = 1
-                x = np.linspace( -self.x_a[0]-5*max_val, self.x_a[0]+5*max_val, self.L)
-                y = np.linspace( -self.x_a[1]-5*max_val, self.x_a[1]+5*max_val, self.L)
+                x = np.linspace( -5, 5, self.L)
+                y = np.linspace( -5, 5, self.L)
 
                 X, Y = np.meshgrid(x,y)
 
@@ -149,7 +140,7 @@ class MplWidget(QWidget):
                 result = self.minimum(self.x_a,x_1,x_2)
 
                 if(result.all() == None):
-                    return self.vector_xm, self.value_xm, result, result, self.F_goal(self.x_a), self.critical, self.iterations 
+                    return self.x012, self.vector_xm, self.value_xm, result, result, self.F_goal(self.x_a), self.critical, self.iterations 
                 
                 try:
                     if(len(self.d0) == 2):
@@ -173,11 +164,11 @@ class MplWidget(QWidget):
                         xm_x2.append(self.x_a[1])
                         self.canvas.axes.plot(xm_x1,xm_x2)
                         self.canvas.draw()
-                        return self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations 
+                        return self.x012, self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations 
                     else:
                         self.canvas.axes.clear()
                         self.canvas.draw()
-                        return self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations
+                        return self.x012, self.vector_xm, self.value_xm, result, self.F_goal(result), self.F_goal(self.x_a), self.critical, self.iterations
                 except:
                     msg = QMessageBox()
                     msg.setInformativeText('Wystąpił nieoczekiwany błąd przy rysowaniu!')
@@ -185,7 +176,7 @@ class MplWidget(QWidget):
                     msg.exec_()
             except:
                 msg = QMessageBox()
-                msg.setInformativeText('Podano nieprawidłową funkcję!')
+                msg.setInformativeText('Podano nieprawidłową funkcję!',x_1,x_2)
                 msg.setWindowTitle("Błąd")
                 msg.exec_()
         else:
@@ -193,3 +184,8 @@ class MplWidget(QWidget):
              msg.setInformativeText('Nie podano kierunku!')
              msg.setWindowTitle("Błąd")
              msg.exec_()
+
+
+if __name__ == "__main__":
+    import sys
+    
