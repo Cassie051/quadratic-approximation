@@ -49,8 +49,16 @@ class MplWidget(QWidget):
         else:
             x_2 = x_1
             x_1 = self.x_a + 0.5 * step * self.d0
-        x_2 = np.array(x_2)
-        x_1 = np.array(x_1)
+        return x_1,x_2
+
+    def NewControls(self, start_point):
+        step = 2
+        x_1 = start_point +  step * self.d0
+        if self.F_goal(start_point) > self.F_goal(x_1):
+            x_2 = start_point + 2 * step * self.d0
+        else:
+            x_2 = x_1
+            x_1 = start_point + 0.5 * step * self.d0
         return x_1,x_2
 
     def minimum(self,x0,x1,x2):
@@ -70,25 +78,33 @@ class MplWidget(QWidget):
                 return currXMin
             xMin = Licznik/Mianownik
             indexOfMaxValue = np.argmax(y)
-            x[indexOfMaxValue] = xMin
-            y[indexOfMaxValue] = self.F_goal(xMin)
-            for i in range(0,len(x)):
-                for j in range(1,len(x)):
-                    if(x[j-1][0] > x[j][0]):
-                        t = x[j-1]
-                        x[j-1] = x[j]
-                        x[j] = t
-                        t= y[j-1]
-                        y[j-1] = y[j]
-                        y[j] = t
-            
-            self.vector_xm.append(xMin)
-            self.value_xm.append(self.F_goal(xMin))
-            self.critical.append(abs(self.F_goal(currXMin) - self.F_goal(xMin)))
-            if(abs(self.F_goal(currXMin) - self.F_goal(xMin))< self.E2 or numberOfIterations>= self.L):
-                break
-            
-            currXMin = xMin
+            if(y[indexOfMaxValue] < self.F_goal(xMin)):
+                x[1], x[2] = self.NewControls(x[indexOfMaxValue])
+                y = [self.F_goal(x[0]), self.F_goal(x[1]), self.F_goal(x[2])]
+                numberOfIterations -= 1
+                self.iterations -= 1
+            else:
+                x[indexOfMaxValue] = xMin
+                y[indexOfMaxValue] = self.F_goal(xMin)
+
+                self.vector_xm.append(xMin)
+                self.value_xm.append(self.F_goal(xMin))
+                self.critical.append(abs(self.F_goal(currXMin) - self.F_goal(xMin)))
+
+                for i in range(0,len(x)):
+                    for j in range(1,len(x)):
+                        if(x[j-1][0] > x[j][0]):
+                            t = x[j-1]
+                            x[j-1] = x[j]
+                            x[j] = t
+                            t= y[j-1]
+                            y[j-1] = y[j]
+                            y[j] = t
+                
+                if(abs(self.F_goal(xMin) - self.F_goal(currXMin)) < self.E2 or numberOfIterations>= self.L):
+                    break
+                
+                currXMin = xMin
         return xMin
 
     def rysuj(self, start, direction, estimation, literation, set_function ):
