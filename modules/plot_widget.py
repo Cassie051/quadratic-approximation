@@ -97,7 +97,7 @@ class MplWidget(QWidget):
                     self.critical.append(np.linalg.norm(f_min_tab[-1]-f_min))
                     i += 1
                     self.iterations = i
-                    if np.linalg.norm(f_min_tab[-1]-f_min) <= self.E2  and i >= self.L:
+                    if np.linalg.norm(f_min_tab[-1]-f_min) <= self.E2  or i >= self.L:
                         break
             else:
                 x_min = L_min/M_min           
@@ -119,10 +119,10 @@ class MplWidget(QWidget):
                 self.value_xm.append(self.F_goal(x_min))
                 self.critical.append(np.linalg.norm(x_min_tab[-1]-x_min))
                 l += 1
-                if np.linalg.norm(x_min_tab[-1]-x_min) <= self.E2 and l >= self.L:
+                self.iterations = l
+                if np.linalg.norm(x_min_tab[-1]-x_min) <= self.E2 or l >= self.L:
                     break
                 x_min_tab.append(x_min)
-                self.iterations = l
         return x_min
 
     def rysuj(self, start, direction, estimation, literation, set_function ):
