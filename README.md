@@ -1,1 +1,1 @@
-# Quadratic approximation
+# Quadratic interpolation
