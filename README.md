@@ -1,6 +1,6 @@
 # Quadratic interpolation
 The Python program with PyQt wich allows to find function minimal and see the countur plot.
-On input is given starting point (punkt startowy), direction d0 (kierunek d0), acurracy (E), number of iterations (L) and function (funcja).
+On input is given starting point (Punkt startowy), direction d0 (Kierunek d0), acurracy (E), number of iterations (L) and function (Funkcja).
 In left box is show the result for each iteration, stop criteria and minimum x.
 
 The program interface is in polish language.
